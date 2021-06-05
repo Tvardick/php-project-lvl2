@@ -1,0 +1,21 @@
+{
+    "name": "hexlet/code",
+    "description": "hexlet-project-lvl2",
+    "authors": [
+        {
+            "name": "Tvard",
+            "email": "i.tvard@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "bin": [
+        "bin/gendiff"
+    ],
+    "autoload": {
+        "files": [
+            "src/test.php"
+        ]
+    }
+}
