@@ -4,24 +4,34 @@
 
 require_once(__DIR__ . "/../vendor/autoload.php");
 
-$doc = <<<"DOCOPT"
+use function Differ\Differ\genDiff;
+
+const VERSION = ["version" => "0.0.1a"];
+
+$doc = <<<DOC
 
 Generate diff
 
-Usage:
+Usage:  
   gendiff (-h|--help)
   gendiff (-v|--version)
-  gendiff [--format <fmt>] <firstFile> <secondFile>
+  gendiff [--format <fmt>] <filepath1> <filepath2>
 
+Arguments:
+  path1        input file1
+  path2        input file1
 
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
   --format <fmt>                Report format [default: stylish]
 
-DOCOPT;
+DOC;
 
-$resutl = Docopt::handle($doc, ["version" => "0.0.1b"]);
-foreach($result as $key => $value) {
-    print_r("{$key}: " . json_encode($value)) . PHP_EOL;
-}
+$result = Docopt::handle($doc, VERSION);
+
+$file1 = $result["<filepath1>"];
+$file2 = $result["<filepath2>"];
+
+print_r(genDiff($file1, $file2));
+

@@ -7,15 +7,15 @@
             "email": "i.tvard@gmail.com"
         }
     ],
-    "require": {
-        "docopt/docopt": "^1.0"
-    },
     "bin": [
         "bin/gendiff"
     ],
     "autoload": {
         "files": [
-            "src/test.php"
+            "src/genDiff.php"
         ]
+    },
+    "require": {
+        "docopt/docopt": "^1.0"
     }
 }
