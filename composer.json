@@ -16,6 +16,7 @@
         ]
     },
     "require": {
-        "docopt/docopt": "^1.0"
+        "docopt/docopt": "^1.0",
+        "tightenco/collect": "^9.8"
     }
 }
