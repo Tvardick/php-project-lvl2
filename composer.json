@@ -13,14 +13,18 @@
     "autoload": {
         "files": [
             "src/genDiff.php"
-        ]
+        ],
+        "psr-4": {
+            "Differ\\Differ\\Tests\\": "tests"
+    }
     },
     "require": {
         "docopt/docopt": "^1.0",
         "tightenco/collect": "^9.8"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.5"
+        "squizlabs/php_codesniffer": "^3.5",
+        "phpunit/phpunit": "^9.5"
     },
         "scripts": {
                 "phpcs": "phpcs"
