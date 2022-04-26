@@ -38,4 +38,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: lint
         run: make lint
+      - name: test
+        run: make test
           
