@@ -10,8 +10,8 @@ class SolutionsTest extends TestCase
 {
     public function testGenDiffJson()
     {
-        $pathToFile1 = __DIR__ . "/fixture/file1.json";
-        $pathToFile2 = __DIR__ . "/fixture/file2.json";
+        $pathToFile1 = __DIR__ . "/fixtures/file1.json";
+        $pathToFile2 = __DIR__ . "/fixtures/file2.json";
         $result = "{
  - follow: false
    host: hexlet.io
