@@ -32,6 +32,3 @@ $result = Docopt::handle($doc, VERSION);
 
 $file1 = $result["<filepath1>"];
 $file2 = $result["<filepath2>"];
-
-print_r(genDiff($file1, $file2));
-

@@ -11,16 +11,19 @@
         "bin/gendiff"
     ],
     "autoload": {
-        "files": [
-            "src/genDiff.php"
-        ],
         "psr-4": {
             "Differ\\Differ\\Tests\\": "tests"
-    }
+    },
+    "files": [
+        "src/differ.php",
+        "src/parser.php"
+    ]
     },
     "require": {
         "docopt/docopt": "^1.0",
-        "tightenco/collect": "^9.8"
+        "tightenco/collect": "^9.8",
+        "symfony/yaml": "^5.3",
+        "lstrojny/functional-php": "^1.17"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.5",
