@@ -4,7 +4,16 @@ namespace Differ\Parser;
 
 use Symfony\Component\Yaml\Yaml;
 
-use function Functional\flatten;
+function toString($data)
+{
+    if (is_bool($data)) {
+        return $data === true ? 'true' : 'false';
+    }
+    if (is_null($data)) {
+        return 'null';
+    }
+    return $data;
+}
 
 function chooseParser($filepath)
 {
@@ -15,12 +24,8 @@ function chooseParser($filepath)
 
 function parseYaml(string $filePathFile1)
 {
-    $contentFile = Yaml::parse(getData($filePathFile1), Yaml::PARSE_OBJECT_FOR_MAP);
-    return collect($contentFile)->reduce(function ($carry, $value) {
-        $convertToArray = (array) $value;
-        $carry[array_keys($convertToArray)[0]] = array_values($convertToArray)[0];
-        return $carry;
-    });
+    $toObject = Yaml::parse(getData($filePathFile1), Yaml::PARSE_OBJECT_FOR_MAP);
+    return json_decode(json_encode($toObject), true);
 }
 
 function parseJson(string $filePathFile1): array
@@ -33,7 +38,7 @@ function getData(string $path): string
     if (!empty($path)) {
         return file_get_contents($path);
     }
-    return throw new Exception("empty path file");
+    return throw new \Exception("empty path: {$path}");
 }
 
 function getExtensionFile($filepath)

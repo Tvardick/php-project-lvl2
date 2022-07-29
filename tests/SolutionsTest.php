@@ -10,32 +10,42 @@ use function Differ\Differ\getExtensionFile;
 
 class SolutionsTest extends TestCase
 {
+    private string $path = __DIR__ . "/fixtures/";
+
+    private function getFilePath($name)
+    {
+        return $this->path . $name;
+    }
+/*
     public function testGenDiffJson()
     {
+        $expected = file_get_contents($this->getFilePath("expectedPlainFile.txt"));
+        print_r($expected);
         $pathToFile1 = __DIR__ . "/fixtures/file1.json";
         $pathToFile2 = __DIR__ . "/fixtures/file2.json";
-        $result = "{
- - follow: false
-   host: hexlet.io
- - proxy: 123.234.53.22
- - timeout: 50
- + timeout: 20
- + verbose: true
-}";
-        $this->assertEquals($result, genDiff($pathToFile1, $pathToFile2));
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
     }
     public function testGenDiffYaml()
     {
+        $expected = file_get_contents($this->getFilePath("expectedPlainFile.txt"));
         $pathToFile1 = __DIR__ . "/fixtures/file1.yaml";
         $pathToFile2 = __DIR__ . "/fixtures/file2.yaml";
-        $result = "{
- - follow: false
-   host: hexlet.io
- - proxy: 123.234.53.22
- - timeout: 50
- + timeout: 20
- + verbose: true
-}";
-        $this->assertEquals($result, genDiff($pathToFile1, $pathToFile2));
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
+    }
+
+     public function testRecursiveJsonFiles()
+    {
+        $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
+        $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.json";
+        $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.json";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
+    }
+  */
+    public function testRecursiveYamlFiles()
+    {
+        $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
+        $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.yml";
+        $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.yaml";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
     }
 }
