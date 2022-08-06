@@ -6,7 +6,7 @@ require_once(__DIR__ . "/../vendor/autoload.php");
 
 use function Differ\Differ\genDiff;
 
-const VERSION = ["version" => "0.0.1a"];
+const VERSION = ["version" => "0.0.2a"];
 
 $doc = <<<DOC
 
@@ -22,9 +22,9 @@ Arguments:
   path2        input file1
 
 Options:
-  -h --help                     Show this screen
-  -v --version                  Show version
-  --format <fmt>                Report format [default: stylish]
+  -h, --help                     Show this screen
+  -v, --version                  Show version
+  -f, --format <fmt>             Report format [default: stylish]
 
 DOC;
 
@@ -32,3 +32,6 @@ $result = Docopt::handle($doc, VERSION);
 
 $file1 = $result["<filepath1>"];
 $file2 = $result["<filepath2>"];
+$format = $result["--format"];
+
+print_r(gendiff($file1, $file2, $format));

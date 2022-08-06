@@ -4,21 +4,21 @@ namespace Differ\Differ;
 
 use Symfony\Component\Yaml\Yaml;
 
-use function Differ\Parser\{chooseParser, toString};
+use function Differ\Parser\chooseParser;
 use function Differ\Formatter\Stylish\stylish;
 use function Functional\sort;
 
-function genDiff(string $filePathFile1, string $filePathFile2): string
+function genDiff(string $filePathFile1, string $filePathFile2, string $format = 'stylish'): string
 {
     $parseFile1 = chooseParser($filePathFile1);
     $parseFile2 = chooseParser($filePathFile2);
 
-    $differ = ast($parseFile1, $parseFile2);
-    $formate = stylish($differ);
+    $ast = ast($parseFile1, $parseFile2);
+    $formate = stylish($ast);
     return $formate;
 }
 
-function ast($parseFile1, $parseFile2)
+function ast(array $parseFile1, array $parseFile2): array
 {
     $keys = array_keys(array_merge($parseFile1, $parseFile2));
     $sortKeys = sort($keys, fn ($key1, $key2) => $key1 <=> $key2);
@@ -34,8 +34,8 @@ function ast($parseFile1, $parseFile2)
         }
         return [
             'key' => $key,
-            'valueFile1' => toString($valueFile1),
-            'valueFile2' => toString($valueFile2),
+            'valueFile1' => $valueFile1,
+            'valueFile2' => $valueFile2,
             'status' => getStatusFile($valueFile1, $valueFile2)
         ];
     }, $sortKeys);
@@ -56,8 +56,3 @@ function getStatusFile($value1, $value2)
         return 'updated';
     }
 }
-
-$pathToFile1 = __DIR__ . "../fixtures/fileRecursive.yml";
-$pathToFile2 = __DIR__ . "../fixtures/fileRecursive2.yaml";
-
-print_r(ast([], []));

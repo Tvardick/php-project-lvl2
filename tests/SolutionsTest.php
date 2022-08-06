@@ -16,31 +16,15 @@ class SolutionsTest extends TestCase
     {
         return $this->path . $name;
     }
-/*
-    public function testGenDiffJson()
-    {
-        $expected = file_get_contents($this->getFilePath("expectedPlainFile.txt"));
-        print_r($expected);
-        $pathToFile1 = __DIR__ . "/fixtures/file1.json";
-        $pathToFile2 = __DIR__ . "/fixtures/file2.json";
-        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
-    }
-    public function testGenDiffYaml()
-    {
-        $expected = file_get_contents($this->getFilePath("expectedPlainFile.txt"));
-        $pathToFile1 = __DIR__ . "/fixtures/file1.yaml";
-        $pathToFile2 = __DIR__ . "/fixtures/file2.yaml";
-        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
-    }
 
-     public function testRecursiveJsonFiles()
+    public function testRecursiveJsonFiles()
     {
         $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
         $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.json";
         $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.json";
         $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
     }
-  */
+
     public function testRecursiveYamlFiles()
     {
         $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
