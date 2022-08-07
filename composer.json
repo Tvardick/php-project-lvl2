@@ -17,7 +17,9 @@
     "files": [
         "src/differ.php",
         "src/parser.php",
-        "src/formatters/stylish.php"
+        "src/formatters/stylish.php",
+        "src/formatters/plain.php",
+        "src/formatters.php"
     ]
     },
     "require": {

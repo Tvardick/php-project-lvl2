@@ -2,14 +2,14 @@
 
 namespace Differ\Formatter\Stylish;
 
-use function Differ\Parser\{chooseParser, stringify};
+use function Differ\Parser\stringify;
 
-function stylish($ast)
+function stylish(array $ast): string
 {
     return iter($ast, " ", 4);
 }
 
-function iter($ast, $replacer, $spaceCount, $depth = 1)
+function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): string
 {
         $ident = $spaceCount * $depth;
         $bracketIdent = str_repeat($replacer, ($ident - $spaceCount));
@@ -19,20 +19,56 @@ function iter($ast, $replacer, $spaceCount, $depth = 1)
 
         switch ($data['status']) {
             case 'unchanged':
-                $acc[] = "{$currentIdent}{$data["key"]}: " . stringify($data['valueFile1'], $replacer, $spaceCount, $depth + 1);
+                $acc[] = "{$currentIdent}{$data["key"]}: " .
+                    stringify(
+                        $data['valueFile1'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
                 break;
             case "removed":
-                $acc[] = "{$currentIdent}{$data['key']}: " . stringify($data['valueFile1'], $replacer, $spaceCount, $depth + 1);
+                $acc[] = "{$currentIdent}{$data['key']}: " .
+                    stringify(
+                        $data['valueFile1'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
                 break;
             case 'added':
-                $acc[] = "{$currentIdent}{$data['key']}: " . stringify($data['valueFile2'], $replacer, $spaceCount, $depth + 1);
+                $acc[] = "{$currentIdent}{$data['key']}: " .
+                    stringify(
+                        $data['valueFile2'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
                 break;
             case "updated":
-                $acc[] = "{$currentIdent[0]}{$data['key']}: " . stringify($data['valueFile1'], $replacer, $spaceCount, $depth + 1);
-                $acc[] = "{$currentIdent[1]}{$data['key']}: " .  stringify($data['valueFile2'], $replacer, $spaceCount, $depth + 1);
+                $acc[] = "{$currentIdent[0]}{$data['key']}: " .
+                    stringify(
+                        $data['valueFile1'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                $acc[] = "{$currentIdent[1]}{$data['key']}: " .
+                    stringify(
+                        $data['valueFile2'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
                 break;
             case "parent":
-                $acc[] = "{$currentIdent}{$data['key']}: " . iter($data['children'], $replacer, $spaceCount, $depth + 1);
+                $acc[] = "{$currentIdent}{$data['key']}: " .
+                    iter(
+                        $data['children'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
                 break;
         }
         return $acc;
@@ -42,7 +78,7 @@ function iter($ast, $replacer, $spaceCount, $depth = 1)
     return implode("\n", $result);
 }
 
-function genCurrentIdent($ident, $replacer, $status)
+function genCurrentIdent(int $ident, string $replacer, string $status): string|array
 {
     $basicIdent = str_repeat($replacer, $ident);
     $len = strlen($basicIdent) - 3;
@@ -54,33 +90,11 @@ function genCurrentIdent($ident, $replacer, $status)
         case 'added':
             return substr_replace($basicIdent, " +", $len, 2);
         case 'updated':
-            return [substr_replace($basicIdent, " -", $len, 2), substr_replace($basicIdent, " +", $len, 2)];
+            return [
+                substr_replace($basicIdent, " -", $len, 2),
+                substr_replace($basicIdent, " +", $len, 2)
+            ];
         case 'parent':
             return $basicIdent;
     }
 }
-/*
-    return array_reduce($differed, function ($carry, $data) {
-        switch ($data['status']) {
-            case 'unchanged':
-                return "   {$data["key"]}: {$data['valueFile1']}";
-                break;
-            case "removed":
-                return " - {$data['key']}: " . stringify($data['valueFile1']);
-                break;
-            case 'added':
-                return " + {$data['key']}: " . stringify($data['valueFile2']);
-                break;
-            case "updated":
-                return " - {$data['key']}: " . stringify($data['valueFile1']);
-                return " + {$data['key']}: " . stringify($data['valueFile2']);
-                break;
-            case "parent":
-                $temp = stylish($data['children']);
-                var_dump($temp);
-                return "   {$data['key']}: {$temp}";
-                break;
-        }
-        return $carry;
-    }, []);
- */

@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use function Differ\Differ\ast;
 
-function toString($data)
+function toString(mixed $data): string|array
 {
     if (is_bool($data)) {
         return $data === true ? 'true' : 'false';
@@ -17,14 +17,14 @@ function toString($data)
     return $data;
 }
 
-function chooseParser($filepath)
+function chooseParser(string $filepath): array
 {
     return getExtensionFile($filepath) === "json"
         ? parseJson($filepath)
         : parseYaml($filepath);
 }
 
-function parseYaml(string $filePathFile1)
+function parseYaml(string $filePathFile1): array
 {
     $toObject = Yaml::parse(getData($filePathFile1), Yaml::PARSE_OBJECT_FOR_MAP);
     return json_decode(json_encode($toObject), true);
@@ -43,12 +43,12 @@ function getData(string $path): string
     return throw new \Exception("empty path: {$path}");
 }
 
-function getExtensionFile($filepath)
+function getExtensionFile(string $filepath): string
 {
     return pathinfo($filepath, PATHINFO_EXTENSION);
 }
 
-function stringify($data, $replacer, $spaceCount = 1, $depth = 1)
+function stringify(mixed $data, string $replacer, int $spaceCount = 1, int $depth = 1): string|array
 {
     if (!is_array($data)) {
         return toString($data);
@@ -58,12 +58,24 @@ function stringify($data, $replacer, $spaceCount = 1, $depth = 1)
     $currentIdent = str_repeat($replacer, $indentSize);
     $bracketIdent = str_repeat($replacer, ($indentSize - $spaceCount));
 
-    $lines = array_map(function ($node, $key) use ($indentSize, $currentIdent, $replacer, $spaceCount, $depth) {
-        $value = is_array($node) ?
-            stringify($node, $replacer, $spaceCount, $depth + 1) :
-            $node;
-        return "{$currentIdent}{$key}: {$value}";
-    }, $data, array_keys($data));
+    $lines = array_map(
+        function (
+            $node,
+            $key
+        ) use (
+            $currentIdent,
+            $replacer,
+            $spaceCount,
+            $depth
+        ) {
+            $value = is_array($node) ?
+                stringify($node, $replacer, $spaceCount, $depth + 1) :
+                $node;
+            return "{$currentIdent}{$key}: {$value}";
+        },
+        $data,
+        array_keys($data)
+    );
 
     $result = ['{', ...$lines, "{$bracketIdent}}"];
 

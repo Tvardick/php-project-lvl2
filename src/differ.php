@@ -41,7 +41,7 @@ function ast(array $parseFile1, array $parseFile2): array
     }, $sortKeys);
 }
 
-function getStatusFile($value1, $value2)
+function getStatusFile(mixed $value1, mixed $value2): string
 {
     if ($value1 === $value2) {
         return 'unchanged';
