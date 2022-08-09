@@ -12,7 +12,7 @@ use function Differ\Formatter\{
     };
 use function Functional\sort;
 
-function genDiff(string $filePathFile1, string $filePathFile2, string $format): string
+function genDiff(string $filePathFile1, string $filePathFile2, string $format = "stylish"): string
 {
     $parseFile1 = chooseParser($filePathFile1);
     $parseFile2 = chooseParser($filePathFile2);

@@ -31,8 +31,7 @@ class SolutionsTest extends TestCase
         $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
         $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.yml";
         $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.yaml";
-        $format = "stylish";
-        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
     }
 
     public function testFormatterPlain()
