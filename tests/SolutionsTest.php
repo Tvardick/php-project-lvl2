@@ -22,7 +22,8 @@ class SolutionsTest extends TestCase
         $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
         $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.json";
         $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.json";
-        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
+        $format = "stylish";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
     }
 
     public function testRecursiveYamlFiles()
@@ -30,6 +31,16 @@ class SolutionsTest extends TestCase
         $expected = file_get_contents($this->getFilePath("expectedResultFileRecursiveJson.txt"));
         $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.yml";
         $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.yaml";
-        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2));
+        $format = "stylish";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
+    }
+
+    public function testFormatterPlain()
+    {
+        $expected = file_get_contents($this->getFilePath("expectedPlainFile.txt"));
+        $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.json";
+        $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.yaml";
+        $format = "plain";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
     }
 }

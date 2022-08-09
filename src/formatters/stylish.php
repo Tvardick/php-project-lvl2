@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Formatter\Stylish;
+namespace Differ\Formatter;
 
 use function Differ\Parser\stringify;
 

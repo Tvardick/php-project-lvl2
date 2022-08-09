@@ -5,3 +5,6 @@
 
 ### diff recursive yaml
 [![asciicast](https://asciinema.org/a/ydncBRw1Ln45X03AgKop5Yp2X.svg)](https://asciinema.org/a/ydncBRw1Ln45X03AgKop5Yp2X)
+
+### Plain style diff
+[![asciicast](https://asciinema.org/a/k6ofLLU8DRAjwGPmP0CohQAk9.svg)](https://asciinema.org/a/k6ofLLU8DRAjwGPmP0CohQAk9)

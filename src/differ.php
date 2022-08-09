@@ -5,17 +5,21 @@ namespace Differ\Differ;
 use Symfony\Component\Yaml\Yaml;
 
 use function Differ\Parser\chooseParser;
-use function Differ\Formatter\Stylish\stylish;
+use function Differ\Formatter\{
+    stylish,
+    plain,
+    chooseFormaters
+    };
 use function Functional\sort;
 
-function genDiff(string $filePathFile1, string $filePathFile2, string $format = 'stylish'): string
+function genDiff(string $filePathFile1, string $filePathFile2, string $format): string
 {
     $parseFile1 = chooseParser($filePathFile1);
     $parseFile2 = chooseParser($filePathFile2);
 
     $ast = ast($parseFile1, $parseFile2);
-    $formate = stylish($ast);
-    return $formate;
+
+    return chooseFormaters($ast, $format);
 }
 
 function ast(array $parseFile1, array $parseFile2): array
