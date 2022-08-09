@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter;
 
-use function Differ\Formatter\{stylish, plain};
+use function Differ\Formatter\{stylish, plain, json};
 
 function chooseFormaters(array $ast, string $format): string
 {
@@ -11,5 +11,7 @@ function chooseFormaters(array $ast, string $format): string
             return stylish($ast);
         case "plain":
             return plain($ast);
+        case "json":
+            return json($ast);
     }
 }

@@ -10,6 +10,8 @@ test:
 	composer exec --verbose phpunit tests
 test-coverage:
 	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
+demo-json:
+	php bin/gendiff -f json tests/fixtures/fileRecursive.json tests/fixtures/fileRecursive2.yaml
 demo-default:
 	php bin/gendiff tests/fixtures/fileRecursive.json tests/fixtures/fileRecursive2.yaml
 demo-plain:

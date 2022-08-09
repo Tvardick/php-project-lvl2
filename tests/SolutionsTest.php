@@ -43,4 +43,13 @@ class SolutionsTest extends TestCase
         $format = "plain";
         $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
     }
+
+    public function testFormatterJson()
+    {
+        $expected = file_get_contents($this->getFilePath("expectedJson.txt"));
+        $pathToFile1 = __DIR__ . "/fixtures/fileRecursive.json";
+        $pathToFile2 = __DIR__ . "/fixtures/fileRecursive2.yaml";
+        $format = "json";
+        $this->assertEquals(trim($expected), genDiff($pathToFile1, $pathToFile2, $format));
+    }
 }
