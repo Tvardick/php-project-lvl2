@@ -2,9 +2,10 @@
 
 namespace Differ\Formatter;
 
-function json(array $ast)
+function json(array $ast): string
 {
-    return json_encode($ast, JSON_PRETTY_PRINT) !== false ?
-        json_encode($ast, JSON_PRETTY_PRINT) :
+    $encodeAst = json_encode($ast, JSON_PRETTY_PRINT);
+    return $encodeAst !== false ?
+        $encodeAst :
         throw new \Exception("This data can't encoding to json -> \n{$ast}");
 }

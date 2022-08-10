@@ -49,14 +49,16 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
                             $depth + 1
                         );
                 case "updated":
-                    return "{$currentIndent[0]}{$data['key']}: " .
+                    [$updateRemoved, $updateAdded] =
+                        explode("\n\n\n", $currentIndent);
+                    return "{$updateRemoved}{$data['key']}: " .
                         stringify(
                             $data['valueFile1'],
                             $replacer,
                             $spaceCount,
                             $depth + 1
                         ) .
-                        "\n{$currentIndent[1]}{$data['key']}: " .
+                        "\n{$updateAdded}{$data['key']}: " .
                         stringify(
                             $data['valueFile2'],
                             $replacer,
@@ -72,7 +74,7 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
                             $depth + 1
                         );
                 default:
-                    throw new \Exception("status isn't foreseen -> {$status}");
+                    throw new \Exception("status isn't foreseen -> {$data['status']}");
             }
         },
         $ast
@@ -82,7 +84,7 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
     return implode("\n", $result);
 }
 
-function genCurrentIndent(int $indent, string $replacer, string $status): string|array
+function genCurrentIndent(int $indent, string $replacer, string $status): string
 {
     $basicIndent = str_repeat($replacer, $indent);
     $startIndent = strlen($basicIndent) - 3;
@@ -94,10 +96,9 @@ function genCurrentIndent(int $indent, string $replacer, string $status): string
         case 'added':
             return substr_replace($basicIndent, " +", $startIndent, 2);
         case 'updated':
-            return [
-                substr_replace($basicIndent, " -", $startIndent, 2),
-                substr_replace($basicIndent, " +", $startIndent, 2)
-            ];
+            $updateRemoved = substr_replace($basicIndent, " -", $startIndent, 2);
+            $updateAdded = substr_replace($basicIndent, " +", $startIndent, 2);
+            return "{$updateRemoved}\n\n\n{$updateAdded}";
         case 'parent':
             return $basicIndent;
         default:
