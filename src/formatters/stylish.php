@@ -61,41 +61,45 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
             switch ($data['status']) {
                 case 'unchanged':
                 case "removed":
-                    return "{$currentIndent}{$data['key']}: {$stringify(
-                            $data['valueFile1'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        )}";
+                    $value = $stringify(
+                        $data['valueFile1'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                    return "{$currentIndent}{$data['key']}: {$value}";
                 case 'added':
-                    return "{$currentIndent}{$data['key']}: {$stringify(
-                            $data['valueFile2'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        )}";
+                    $value = $stringify(
+                        $data['valueFile2'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                    return "{$currentIndent}{$data['key']}: {$value}";
                 case "updated":
                     [$updateRemoved, $updateAdded] =
                         explode("\n\n\n", $currentIndent);
-                    return "{$updateRemoved}{$data['key']}: {$stringify(
-                            $data['valueFile1'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        )}\n{$updateAdded}{$data['key']}: {$stringify(
-                            $data['valueFile2'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        )}";
+                    $value1 = $stringify(
+                        $data['valueFile1'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                    $value2 = $stringify(
+                        $data['valueFile2'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                    return "{$updateRemoved}{$data['key']}: {$value1}\n{$updateAdded}{$data['key']}: {$value2}";
                 case "parent":
-                    return "{$currentIndent}{$data['key']}: " .
-                        iter(
-                            $data['children'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        );
+                    $value3 = iter(
+                        $data['children'],
+                        $replacer,
+                        $spaceCount,
+                        $depth + 1
+                    );
+                    return "{$currentIndent}{$data['key']}: {$value3}";
                 default:
                     throw new \Exception("status isn't foreseen -> {$data['status']}");
             }
