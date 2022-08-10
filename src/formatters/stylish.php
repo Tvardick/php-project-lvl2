@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter;
 
-use function Differ\Parser\stringify;
+use function Differ\Parser\{toString, stringify};
 
 function stylish(array $ast): string
 {
@@ -26,48 +26,45 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
             switch ($data['status']) {
                 case 'unchanged':
                 case "removed":
-                    $value = stringify(
+                    $removedValue = stringify(
                         $data['valueFile1'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    print_r("\nremoved {$data['key']} --- " . gettype($value));
-                    return "{$currentIndent}{$data['key']}: {$value}";
+                    return "{$currentIndent}{$data['key']}: {$removedValue}";
                 case 'added':
-                    $value = stringify(
+                    $addedValue = stringify(
                         $data['valueFile2'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    print_r("\nadded {$data["key"]} --- " . gettype($value));
-                    return "{$currentIndent}{$data['key']}: {$value}";
+                    return "{$currentIndent}{$data['key']}: {$addedValue}";
                 case "updated":
-                    [$updateRemoved, $updateAdded] =
+                    [$removedIndent, $addedIndent] =
                         explode("\n\n\n", $currentIndent);
-                    $value1 = stringify(
+                    $removedVal = stringify(
                         $data['valueFile1'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    $value2 = stringify(
+                    $addedVal = stringify(
                         $data['valueFile2'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    print_r("\nupdate {$data["key"]} --- " . gettype($value1) . gettype($value2));
-                    return "{$updateRemoved}{$data['key']}: {$value1}\n{$updateAdded}{$data['key']}: {$value2}";
+                    return "{$removedIndent}{$data['key']}: {$removedVal}\n{$addedIndent}{$data['key']}: {$addedVal}";
                 case "parent":
-                    $value3 = iter(
+                    $value = iter(
                         $data['children'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    return "{$currentIndent}{$data['key']}: {$value3}";
+                    return "{$currentIndent}{$data['key']}: {$value}";
                 default:
                     throw new \Exception("status isn't foreseen -> {$data['status']}");
             }
