@@ -50,37 +50,3 @@ function getExtensionFile(string $filepath): string
 {
     return pathinfo($filepath, PATHINFO_EXTENSION);
 }
-
-function stringify(mixed $data, string $replacer, int $spaceCount = 1, int $depth = 1): string|array
-{
-    if (!is_array($data)) {
-        return toString($data);
-    }
-
-    $indentSize = ($depth * $spaceCount);
-    $currentIdent = str_repeat($replacer, $indentSize);
-    $bracketIdent = str_repeat($replacer, ($indentSize - $spaceCount));
-
-    $lines = array_map(
-        function (
-            $node,
-            $key
-        ) use (
-            $currentIdent,
-            $replacer,
-            $spaceCount,
-            $depth
-        ) {
-            $value = is_array($node) ?
-                stringify($node, $replacer, $spaceCount, $depth + 1) :
-                $node;
-            return "{$currentIdent}{$key}: {$value}";
-        },
-        $data,
-        array_keys($data)
-    );
-
-    $result = ['{', ...$lines, "{$bracketIdent}}"];
-
-    return implode("\n", $result);
-}

@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter;
 
-use function Differ\Parser\stringify;
+use function Differ\Parser\toString;
 
 function stylish(array $ast): string
 {
@@ -13,8 +13,43 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
 {
     $indent = $spaceCount * $depth;
     $bracketIndent = str_repeat($replacer, ($indent - $spaceCount));
-    $line = array_map(
+    $stringify = function ($data, $replacer, $spaceCount, $depth) use (&$stringify) {
+        if (!is_array($data)) {
+            return toString($data);
+        }
+
+        $indentSize = ($depth * $spaceCount);
+        $currentIdent = str_repeat($replacer, $indentSize);
+        $bracketIdent = str_repeat($replacer, ($indentSize - $spaceCount));
+
+        $lines = array_map(
+            function (
+                $node,
+                $key
+            ) use (
+                $stringify,
+                $currentIdent,
+                $replacer,
+                $spaceCount,
+                $depth
+            ) {
+                $value = is_array($node) ?
+                    $stringify($node, $replacer, $spaceCount, $depth + 1) :
+                    $node;
+                return "{$currentIdent}{$key}: {$value}";
+            },
+            $data,
+            array_keys($data)
+        );
+
+        $result = ['{', ...$lines, "{$bracketIdent}}"];
+
+        return implode("\n", $result);
+    };
+
+    $lines = array_map(
         function ($data) use (
+            $stringify,
             $indent,
             $replacer,
             $spaceCount,
@@ -25,46 +60,34 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
 
             switch ($data['status']) {
                 case 'unchanged':
-                    return "{$currentIndent}{$data["key"]}: " .
-                        stringify(
-                            $data['valueFile1'],
-                            $replacer,
-                            $spaceCount,
-                            $depth + 1
-                        );
                 case "removed":
-                    return "{$currentIndent}{$data['key']}: " .
-                        stringify(
+                    return "{$currentIndent}{$data['key']}: {$stringify(
                             $data['valueFile1'],
                             $replacer,
                             $spaceCount,
                             $depth + 1
-                        );
+                        )}";
                 case 'added':
-                    return "{$currentIndent}{$data['key']}: " .
-                        stringify(
+                    return "{$currentIndent}{$data['key']}: {$stringify(
                             $data['valueFile2'],
                             $replacer,
                             $spaceCount,
                             $depth + 1
-                        );
+                        )}";
                 case "updated":
                     [$updateRemoved, $updateAdded] =
                         explode("\n\n\n", $currentIndent);
-                    return "{$updateRemoved}{$data['key']}: " .
-                        stringify(
+                    return "{$updateRemoved}{$data['key']}: {$stringify(
                             $data['valueFile1'],
                             $replacer,
                             $spaceCount,
                             $depth + 1
-                        ) .
-                        "\n{$updateAdded}{$data['key']}: " .
-                        stringify(
+                        )}\n{$updateAdded}{$data['key']}: {$stringify(
                             $data['valueFile2'],
                             $replacer,
                             $spaceCount,
                             $depth + 1
-                        );
+                        )}";
                 case "parent":
                     return "{$currentIndent}{$data['key']}: " .
                         iter(
@@ -79,7 +102,7 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
         },
         $ast
     );
-    $result = ["{", ...$line, "{$bracketIndent}}"];
+    $result = ["{", ...$lines, "{$bracketIndent}}"];
 
     return implode("\n", $result);
 }
