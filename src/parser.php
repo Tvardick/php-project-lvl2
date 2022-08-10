@@ -27,7 +27,9 @@ function chooseParser(string $filepath): array
 function parseYaml(string $filePathFile1): array
 {
     $toObject = Yaml::parse(getData($filePathFile1), Yaml::PARSE_OBJECT_FOR_MAP);
-    return json_decode(json_encode($toObject), true);
+    return is_object($toObject) ?
+        json_decode(json_encode($toObject), true) :
+        throw new \Exception("The data is't object -> \n" . gettype($toObject));
 }
 
 function parseJson(string $filePathFile1): array
@@ -37,7 +39,7 @@ function parseJson(string $filePathFile1): array
 
 function getData(string $path): string
 {
-    if (!empty($path)) {
+    if ($path !== "") {
         return file_get_contents($path);
     }
     return throw new \Exception("empty path: {$path}");

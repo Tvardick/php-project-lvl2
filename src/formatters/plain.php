@@ -22,19 +22,18 @@ function plain(array $ast): string
                         " to " .
                         checkPlainProperty($data['valueFile2']);
                 case 'parent':
-                    $acc = "{$acc}{$data["key"]}.";
-                    return $iter($data['children'], $acc);
+                    return $iter($data['children'], "{$acc}{$data["key"]}.");
                 default:
                     throw new \Exception("status didn't expect: {$data['status']}");
             }
         }, $currentValue);
-        $filteredEmptyLine = array_filter($lines, fn($line) => !empty($line));
+        $filteredEmptyLine = array_filter($lines, fn($line) => isset($line));
         return implode("\n", $filteredEmptyLine);
     };
     return $iter($ast, "");
 }
 
-function checkPlainProperty($data)
+function checkPlainProperty(mixed $data): string
 {
     if (!is_array($data)) {
         return is_string($data) ? "'{$data}'" : toString($data);

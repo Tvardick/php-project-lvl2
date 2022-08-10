@@ -13,5 +13,7 @@ function chooseFormaters(array $ast, string $format): string
             return plain($ast);
         case "json":
             return json($ast);
+        default:
+            throw new \Exception("format isn't foreseen ->\n{$format}");
     }
 }
