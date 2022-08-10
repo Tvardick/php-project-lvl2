@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter;
 
-use function Differ\Parser\toString;
+use function Differ\Parser\stringify;
 
 function stylish(array $ast): string
 {
@@ -13,43 +13,8 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
 {
     $indent = $spaceCount * $depth;
     $bracketIndent = str_repeat($replacer, ($indent - $spaceCount));
-    $stringify = function ($data, $replacer, $spaceCount, $depth) use (&$stringify) {
-        if (!is_array($data)) {
-            return toString($data);
-        }
-
-        $indentSize = ($depth * $spaceCount);
-        $currentIdent = str_repeat($replacer, $indentSize);
-        $bracketIdent = str_repeat($replacer, ($indentSize - $spaceCount));
-
-        $lines = array_map(
-            function (
-                $node,
-                $key
-            ) use (
-                $stringify,
-                $currentIdent,
-                $replacer,
-                $spaceCount,
-                $depth
-            ) {
-                $value = is_array($node) ?
-                    $stringify($node, $replacer, $spaceCount, $depth + 1) :
-                    $node;
-                return "{$currentIdent}{$key}: {$value}";
-            },
-            $data,
-            array_keys($data)
-        );
-
-        $result = ['{', ...$lines, "{$bracketIdent}}"];
-
-        return implode("\n", $result);
-    };
-
     $lines = array_map(
         function ($data) use (
-            $stringify,
             $indent,
             $replacer,
             $spaceCount,
@@ -61,36 +26,39 @@ function iter(array $ast, string $replacer, int $spaceCount, int $depth = 1): st
             switch ($data['status']) {
                 case 'unchanged':
                 case "removed":
-                    $value = $stringify(
+                    $value = stringify(
                         $data['valueFile1'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
+                    print_r("\nremoved {$data['key']} --- " . gettype($value));
                     return "{$currentIndent}{$data['key']}: {$value}";
                 case 'added':
-                    $value = $stringify(
+                    $value = stringify(
                         $data['valueFile2'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
+                    print_r("\nadded {$data["key"]} --- " . gettype($value));
                     return "{$currentIndent}{$data['key']}: {$value}";
                 case "updated":
                     [$updateRemoved, $updateAdded] =
                         explode("\n\n\n", $currentIndent);
-                    $value1 = $stringify(
+                    $value1 = stringify(
                         $data['valueFile1'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
-                    $value2 = $stringify(
+                    $value2 = stringify(
                         $data['valueFile2'],
                         $replacer,
                         $spaceCount,
                         $depth + 1
                     );
+                    print_r("\nupdate {$data["key"]} --- " . gettype($value1) . gettype($value2));
                     return "{$updateRemoved}{$data['key']}: {$value1}\n{$updateAdded}{$data['key']}: {$value2}";
                 case "parent":
                     $value3 = iter(
